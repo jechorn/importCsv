@@ -184,5 +184,5 @@ FROM (
                     FROM `portal_sort` AS aaaa
                     WHERE `portal_value` = 50) AS e
               GROUP BY e.`city`
-            ) AS ee ON aa.`city` = ee.`city`;
+            ) AS ee ON aa.`city` = ee.`city` ORDER BY aa.`total` DESC;
 
