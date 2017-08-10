@@ -68,6 +68,7 @@ $time = time();
 $finalNum = 0;
 $finalSuccessNum = 0;
 $finalFailNum = 0;
+$error = '';
 for ($j = 0; $j < count($temp); $j++) {
 
 
@@ -79,16 +80,13 @@ for ($j = 0; $j < count($temp); $j++) {
     $successNum = 0;
     $failNum = 0;
     //打开文件
-    $file = fopen($temp[$j], 'rb');
+    $file = fopen($temp[$j], 'r');
     $csvData = [];
     //读取里面的内容
 
     $content = trim(file_get_contents($temp[$j]));
     //匹配内容中的不正常换行符
-    //preg_match_all("/\"(.*)(\n*)(.*)(\n*)(.*)\"/iU", $content, $match);
     $content = preg_replace("/\"(.*)(\n*)(.*)(\n*)(.*)\"/iU", '${1}${3}${5}', $content);
-    //file_put_contents($temp[$j], $content);
-
 
     $csvData = explode(PHP_EOL, $content);
 
@@ -100,19 +98,18 @@ for ($j = 0; $j < count($temp); $j++) {
         $chunkData = array_chunk($csvData, $size);
         $count = count($chunkData);
         $total = 0;
-
-        for ($k = 0; $k < $count; $k++) {
-
+        foreach ($chunkData as $k=>$vo) {
             $insertRows = [];
-            foreach ($chunkData[$k] as $value) {
+            foreach ($vo as $value) {
                 //$string = mb_convert_encoding($value, 'GB2312');//转码
                 //$string = mb_convert_encoding(trim(strip_tags($value)), 'utf-8','utf-8');//转码
-                $string = trim(strip_tags($value));
+                $string = trim(stripslashes(strip_tags($value)));
                 $v = explode(',', trim($string));
                 $row = [];
 
                 for ($r = 0; $r < $fieldNum; $r++) {
                     //$row[$tableField[$r]] = trim(str_replace("'", "", $v[$r]));
+
                     $row[$tableField[$r]] = iconv('gb2312','utf-8//ignore',trim(str_replace("'", "", $v[$r])));
                 }
 
@@ -122,9 +119,7 @@ for ($j = 0; $j < count($temp); $j++) {
 
             }
             $data = implode(',', $insertRows);
-
             $sql = "INSERT IGNORE INTO `{$tableName}` ({$field}) VALUES {$data}";
-
             $res = $dbh->exec($sql);
 
             if ($res) {
@@ -137,9 +132,8 @@ for ($j = 0; $j < count($temp); $j++) {
                 echo PHP_EOL;
             }
 
-
-
         }
+
 
         fclose($file);
         $endTime = time();

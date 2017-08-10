@@ -49,3 +49,25 @@ CREATE TABLE `visitor` (
   ENGINE = MyISAM
   DEFAULT CHARSET = utf8;
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- --------------------------------------
+-- 全部数据导入数据库成功后执行下面的SQL语句
+-- --------------------------------------
+
+ALTER TABLE `visitor`
+  ADD INDEX `city` (`city`) ,
+  ADD INDEX `phone_mac` (`phone_mac`) ,
+  ADD INDEX `visitor_account` (`visitor_account`) ;
+
+-- --------------------------------------
+-- 数据批量导入前先禁用索引
+-- --------------------------------------
+ALTER TABLE `visitor` DISABLE KEYS ;
+
+-- --------------------------------------
+-- 数据批量导入成功后再开启索引
+-- --------------------------------------
+ALTER TABLE `visitor` ENABLE KEYS;
+
+
+

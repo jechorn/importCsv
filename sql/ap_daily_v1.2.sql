@@ -80,6 +80,27 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 
 
+-- --------------------------------------
+-- 全部数据导入数据库成功后执行下面的SQL语句
+-- --------------------------------------
+
+ALTER TABLE `ap_daily`
+  ADD INDEX `city` (`city`) ,
+  ADD INDEX `portal_lever` (`portal_lever`) ,
+  ADD INDEX `broadband_account` (`broadband_account`) ;
+
+-- --------------------------------------
+-- 数据批量导入前先禁用索引
+-- --------------------------------------
+ALTER TABLE `ap_daily` DISABLE KEYS ;
+
+-- --------------------------------------
+-- 数据批量导入成功后再开启索引
+-- --------------------------------------
+ALTER TABLE `ap_daily` ENABLE KEYS;
+
+
+
 -- -----------------------------
 -- 优化后的宽带账号去重视图
 -- version:v1.3
