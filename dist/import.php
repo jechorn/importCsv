@@ -63,13 +63,16 @@ for ($index = 0; $index < $fieldNum; $index++) {
 }
 
 //每次插入的数据的数量
-$size = 5000;
+$size = 10000;
 $time = time();
 $finalNum = 0;
 $finalSuccessNum = 0;
 $finalFailNum = 0;
 for ($j = 0; $j < count($temp); $j++) {
-    echo iconv('utf-8', 'gb2312', '正在读取'.basename($temp[$j]).'文件，请稍后......' );
+
+
+    $basename = iconv('utf-8','gb2312//ignore',basename($temp[$j]));
+    echo iconv('utf-8','gb2312//ignore','正在读取'.$basename.'文件，请稍后......');
     echo PHP_EOL;
 
     $startTime = time();
@@ -109,8 +112,8 @@ for ($j = 0; $j < count($temp); $j++) {
                 $row = [];
 
                 for ($r = 0; $r < $fieldNum; $r++) {
-                    $row[$tableField[$r]] = trim(str_replace("'", "", $v[$r]));
-                    //$row[$tableField[$r]] = iconv('gb2312','utf-8//ignore',trim(str_replace("'", "", $v[$r])));
+                    //$row[$tableField[$r]] = trim(str_replace("'", "", $v[$r]));
+                    $row[$tableField[$r]] = iconv('gb2312','utf-8//ignore',trim(str_replace("'", "", $v[$r])));
                 }
 
                 $sqlString = '(' . "'" . implode("','", $row) . "'" . ')'; //批量
@@ -119,6 +122,7 @@ for ($j = 0; $j < count($temp); $j++) {
 
             }
             $data = implode(',', $insertRows);
+
             $sql = "INSERT IGNORE INTO `{$tableName}` ({$field}) VALUES {$data}";
 
             $res = $dbh->exec($sql);
@@ -129,9 +133,10 @@ for ($j = 0; $j < count($temp); $j++) {
                 echo PHP_EOL;
             } else {
                 $failNum = $failNum + $size;
-                echo iconv('utf-8', 'gb2312', '本次插入成功:0条,失败' . $failNum . '条,总插入成功' . $successNum . '条,总插入失败' . $failNum . '条');
+                echo iconv('utf-8', 'gb2312', '本次插入成功:0条,失败' . $size . '条,总插入成功' . $successNum . '条,总插入失败' . $failNum . '条');
                 echo PHP_EOL;
             }
+
 
 
         }
@@ -141,12 +146,12 @@ for ($j = 0; $j < count($temp); $j++) {
         $thisTime = $endTime - $startTime;
         $finalSuccessNum = $finalSuccessNum + $successNum;
         $finalFailNum = $finalFailNum + $failNum;
-        echo iconv('utf-8', 'gb2312', basename($temp[$j]) . '文件本次执行完毕,用时' . $thisTime . '秒,本应插入' . $totalNum . '条，实际插入' . $successNum . '条,失败' . $failNum . '条');
+        echo iconv('utf-8','gb2312//ignore',$basename.'文件本次执行完毕,用时' . $thisTime . '秒,本应插入' . $totalNum . '条，实际插入' . $successNum . '条,失败' . $failNum . '条');
         echo PHP_EOL;
         $insertRows = null;
 
     }else{
-        echo iconv('utf-8', 'gb2312', basename($temp[$j]) . '文件跳过执行,文件字段跟数据表字段不对应');
+        echo iconv('utf-8','gb2312//ignore',$basename.'文件跳过执行,文件字段跟数据表字段不对应');
         echo PHP_EOL;
     }
 
@@ -156,7 +161,7 @@ for ($j = 0; $j < count($temp); $j++) {
 
 }
 $totalTime = time() - $time;
-echo iconv('utf-8', 'gb2312', '所有文件执行完毕,共导入' . count($temp) . '个文件,用时' . $totalTime . '秒,本应插入' . $finalNum . '条，实际插入' . $finalSuccessNum . '条,失败' . $finalFailNum . '条');
+echo iconv('utf-8', 'gbk', '所有文件执行完毕,共导入' . count($temp) . '个文件,用时' . $totalTime . '秒,本应插入' . $finalNum . '条，实际插入' . $finalSuccessNum . '条,失败' . $finalFailNum . '条');
 
 
 
