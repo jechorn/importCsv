@@ -15,18 +15,10 @@
 // ****************************************************
 
 /**  ---------------------------------------------------------
- * |  下面是链接数据库的详细配置信息，请根据你的你索要操作的数据库就行详细的配置
- * |  ps: 数据库类型默认是mysql,请不要随意修改
- * |  ps: 数据库主机名：本地的话一般是localhost或者127.0.0.1
- * |  ps:数据库用户名 mysql默认是root,密码为空，请根据你的实际情况进行设置
+ * |  关于数据库的详细信息配置已经转移到的db.php文件,请移步到该文件进行配置
  * |-------------------------------------------------------------*/
-$dbms = 'mysql';     //数据库类型
-$host = 'localhost'; //数据库主机名
-$dbName = 'data';    //使用的数据库
-$user = 'root';      //数据库连接用户名
-$pass = '';          //对应的密码
-// $dsn 不用修改
-$dsn = "$dbms:host=$host;dbname=$dbName";
+//引入数据库配置文件
+require_once './dist/db.php';
 
 // ***************************************************
 //                     分割线
@@ -43,8 +35,15 @@ $tableName = 'ap_daily'; //需要插入的数据表的名称
 $dirName = 'daily';   //csv存放的目录，必须在该文件同级的data文件夹里面新建
 
 //数据表的字段名称
-$tableField = ['statistics_time', 'broadband_account', 'city', 'industry', 'businessman_id', 'businessman_name', 'install_address', 'ap_mac', 'is_match', 'ssid', 'login_page_uv','success_page_uv','login_page_pv','success_page_pv','pv_http','is_active_ap','is_online_ap','portal_lever','process_time','access_number','partner','match_time','ap_version_number','ap_type'];
 
+/**  ---------------------------------------------------------
+ * |  请参考sql文件夹下面对应的创表语句添加数据表的表的字段；
+ * |  ps:请按照csv文件第一行的表头字段顺序进行添加数据表的表的字段；
+ * |  ps: 比如csv文件第一行的数据为 “统计时间，AP_MAC,地市”，那么相应的表字段就应该设置为：$tableField = ['statistics_time', 'ap_mac', 'city'];
+ * |  ps:错误的设置顺序：$tableField = ['statistics_time', 'city','ap_mac'];
+ * |-------------------------------------------------------------*/
+
+$tableField = ['statistics_time', 'broadband_account', 'city', 'industry', 'businessman_id', 'businessman_name', 'install_address', 'ap_mac', 'is_match', 'ssid', 'login_page_uv','success_page_uv','login_page_pv','success_page_pv','pv_http','is_active_ap','is_online_ap','portal_lever','process_time','access_number','partner','match_time','ap_version_number','ap_type'];
 
 
 

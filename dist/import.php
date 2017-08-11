@@ -11,7 +11,6 @@
  * '-------------------------------------------------------------------*/
 
 
-
 // 此行文字以下的代码请不要随意修改,切记
 
 
@@ -52,11 +51,11 @@ foreach ($fileList as $v) {
 
 //对数据表字段进行组合
 $field = '';
-$fieldNum = count($tableField) ;
+$fieldNum = count($tableField);
 for ($index = 0; $index < $fieldNum; $index++) {
-    if ($index == ($fieldNum-1)) {
+    if ($index == ($fieldNum - 1)) {
         $field .= "`{$tableField[$index]}`";
-    }else{
+    } else {
         $field .= "`{$tableField[$index]}`,";
     }
 
@@ -68,12 +67,15 @@ $time = time();
 $finalNum = 0;
 $finalSuccessNum = 0;
 $finalFailNum = 0;
-$error = '';
-for ($j = 0; $j < count($temp); $j++) {
+$tempNum = count($temp);
+if ($tempNum > 0) {
+    $dbh->exec("ALTER TABLE `{$tableName}` DISABLE KEYS ;");
+}
+for ($j = 0; $j < $tempNum; $j++) {
 
 
-    $basename = iconv('utf-8','gb2312//ignore',basename($temp[$j]));
-    echo iconv('utf-8','gb2312//ignore','正在读取'.$basename.'文件，请稍后......');
+    $basename = iconv('utf-8', 'gb2312//ignore', basename($temp[$j]));
+    echo iconv('utf-8', 'gb2312//ignore', '正在读取' . $basename . '文件，请稍后......');
     echo PHP_EOL;
 
     $startTime = time();
@@ -98,7 +100,7 @@ for ($j = 0; $j < count($temp); $j++) {
         $chunkData = array_chunk($csvData, $size);
         $count = count($chunkData);
         $total = 0;
-        foreach ($chunkData as $k=>$vo) {
+        foreach ($chunkData as $k => $vo) {
             $insertRows = [];
             foreach ($vo as $value) {
                 //$string = mb_convert_encoding($value, 'GB2312');//转码
@@ -110,7 +112,7 @@ for ($j = 0; $j < count($temp); $j++) {
                 for ($r = 0; $r < $fieldNum; $r++) {
                     //$row[$tableField[$r]] = trim(str_replace("'", "", $v[$r]));
 
-                    $row[$tableField[$r]] = iconv('gb2312','utf-8//ignore',trim(str_replace("'", "", $v[$r])));
+                    $row[$tableField[$r]] = iconv('gb2312', 'utf-8//ignore', trim(str_replace("'", "", $v[$r])));
                 }
 
                 $sqlString = '(' . "'" . implode("','", $row) . "'" . ')'; //批量
@@ -140,12 +142,12 @@ for ($j = 0; $j < count($temp); $j++) {
         $thisTime = $endTime - $startTime;
         $finalSuccessNum = $finalSuccessNum + $successNum;
         $finalFailNum = $finalFailNum + $failNum;
-        echo iconv('utf-8','gb2312//ignore',$basename.'文件本次执行完毕,用时' . $thisTime . '秒,本应插入' . $totalNum . '条，实际插入' . $successNum . '条,失败' . $failNum . '条');
+        echo iconv('utf-8', 'gb2312//ignore', $basename . '文件本次执行完毕,用时' . $thisTime . '秒,本应插入' . $totalNum . '条，实际插入' . $successNum . '条,失败' . $failNum . '条');
         echo PHP_EOL;
         $insertRows = null;
 
-    }else{
-        echo iconv('utf-8','gb2312//ignore',$basename.'文件跳过执行,文件字段跟数据表字段不对应');
+    } else {
+        echo iconv('utf-8', 'gb2312//ignore', $basename . '文件跳过执行,文件字段跟数据表字段不对应');
         echo PHP_EOL;
     }
 
