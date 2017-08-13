@@ -18,7 +18,7 @@
  * |  关于数据库的详细信息配置已经转移到的db.php文件,请移步到该文件进行配置
  * |-------------------------------------------------------------*/
 //引入数据库配置文件
-require_once './dist/db.php';
+include './dist/db.php';
 
 // ***************************************************
 //                     分割线
@@ -51,6 +51,6 @@ $tableField = ['statistics_time', 'ap_mac', 'city', 'industry', 'businessman_nam
 //                     分割线
 // ****************************************************
 
-require_once './dist/import.php';
+include './dist/import.php';
 
 
