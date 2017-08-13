@@ -188,8 +188,7 @@ for ($i = $index ;$i < $phoneNum; $i++){
     $phoneKey++;
 
 }
-echo $phoneKey;
-
+$phoneData = null;
 
 echo iconv('utf-8', 'gb2312', '正在开始写入内容到'.$outputName.'文件，请稍后');
 echo PHP_EOL;
@@ -212,6 +211,10 @@ fclose($fp);
 $endTime = time();
 echo iconv('utf-8', 'gb2312', '写入文件完成，耗时' . ($endTime - $startTime) . '秒');
 echo PHP_EOL;
+echo iconv('utf-8', 'gb2312', '全部过程完成，总耗时' . (time() - $initTime) . '秒');
+echo PHP_EOL;
+
+
 
 
 
