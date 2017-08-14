@@ -18,7 +18,7 @@
 $initTime = time();
 require './dist/functions.php';
 set_time_limit(0);
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '1524M');
 setlocale(LC_ALL, 'zh_CN');
 error_reporting(E_ERROR);
 
@@ -109,11 +109,17 @@ echo PHP_EOL;
 echo iconv('utf-8', 'gb2312', '清理号码总用时' . ($endTime - $startTime) . '秒');
 echo PHP_EOL;
 
-echo iconv('utf-8', 'gb2312', '正在对手机进行升序排序，请稍后');
+echo iconv('utf-8', 'gb2312', '正在对手机进行升序排序并去重，请稍后');
 echo PHP_EOL;
 $startTime = time();
+$phoneData = array_unique($phoneData);
+
 sort($phoneData);
+
 $endTime = time();
+$phoneNum = count($phoneData);
+echo iconv('utf-8', 'gb2312', '去重后号码总数' . $phoneNum);
+echo PHP_EOL;
 echo iconv('utf-8', 'gb2312', '排序号码总用时' . ($endTime - $startTime) . '秒');
 echo PHP_EOL;
 
@@ -131,7 +137,7 @@ unset($locationData[0]);
 $startTime = time();
 echo iconv('utf-8', 'gb2312', '正在对号码归属地进行升序排序，请稍后');
 echo PHP_EOL;
-$locationData = arraySequence($locationData, 1);
+$locationData = arraySequence($locationData, 0);
 $endTime = time();
 echo iconv('utf-8', 'gb2312', '排序号码归属地总用时' . ($endTime - $startTime) . '秒');
 echo PHP_EOL;
@@ -151,17 +157,19 @@ $phoneKey = 0;
 $count = 0;
 
 foreach ($locationData as $key => $value) {
-    $pattern = '/(' . $value[1] . ')([0-9]{4})/i';
+    $pattern = '/(' . $value[0] . ')([0-9]{4})/i';
     for ($i = $index; $i < $phoneNum; $i++) {
         $arr[$phoneKey]['phone'] = iconv('utf-8', 'gb2312', $phoneData[$i]);
 
-        if (preg_match($pattern, $phoneData[$i], $match) && $value[1] >= mb_substr($phoneData[$i], 0, 7)) {
-            $arr[$phoneKey]['province'] = iconv('utf-8', 'gb2312', $value[2]);
-            $arr[$phoneKey]['city'] = iconv('utf-8', 'gb2312', $value[3]);
+        if (preg_match($pattern, $phoneData[$i], $match) && $value[0] >= mb_substr($phoneData[$i], 0, 7)) {
+            $arr[$phoneKey]['province'] = $value[1];
+            $arr[$phoneKey]['city'] = $value[2];
+            //$arr[$phoneKey]['province'] = iconv('utf-8', 'gb2312', $value[1]);
+            //$arr[$phoneKey]['city'] = iconv('utf-8', 'gb2312', $value[2]);
             $phoneKey++;
             $index = $i + 1;
             $count++;
-        } elseif (!preg_match($pattern, $phoneData[$i], $match) && $value[1] >= mb_substr($phoneData[$i], 0, 7)) {
+        } elseif (!preg_match($pattern, $phoneData[$i], $match) && $value[0] >= mb_substr($phoneData[$i], 0, 7)) {
             $arr[$phoneKey]['province'] = '';
             $arr[$phoneKey]['city'] = '';
             $phoneKey++;
@@ -193,7 +201,7 @@ $phoneData = null;
 echo iconv('utf-8', 'gb2312', '正在开始写入内容到'.$outputName.'文件，请稍后');
 echo PHP_EOL;
 $startTime = time();
-$fp = fopen("./data/phone/{$outputName}", 'w') or die(iconv('utf-8', 'gb2312', '错误提示：'.$outputName . '文件已经打开,请关闭文件后重试'));
+$fp = fopen($dir."/".$outputName, 'w') or die(iconv('utf-8', 'gb2312', '错误提示：'.$outputName . '文件已经打开,请关闭文件后重试'));
 $phoneNumber = iconv('utf-8', 'gb2312', '手机号码');
 $province = iconv('utf-8', 'gb2312', '手机号码');
 $city = iconv('utf-8', 'gb2312', '手机号码');
